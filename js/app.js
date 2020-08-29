@@ -56,7 +56,7 @@ const game = {
     },
 
     generateDrops() {
-        if (this.framesCounter % 90 === 0) {
+        if (this.framesCounter % 200 === 0) {
             this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, "missile.png"))
             console.log(this.missiles)
         }
