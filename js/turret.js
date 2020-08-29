@@ -48,6 +48,6 @@ class Turret {
     }
 
     clearShots() {
-        this.shots = this.shots.filter(shot => shot.position.y >= -10);
+        this.shots = this.shots.filter(shot => shot.position.y >= -10)
     }
 }

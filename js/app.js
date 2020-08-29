@@ -11,6 +11,7 @@ const game = {
     turret: undefined,
     shot: undefined,
     missiles: [],
+    parachutes: [],
     background: undefined,
     canvasSize: {
         w: 900,
@@ -38,20 +39,35 @@ const game = {
             }
             this.clear()
             this.drawAll()
-        }, 50 / this.FPS);
+            this.generateDrops()
+            this.clearDrops()
+        }, 1000 / this.FPS);
     },
   
     drawAll() {
         this.background.draw()
         this.turret.draw()
-    },
-
-    generateMissiles() {
-        this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h - 110, 0, "missile.png"))
+        this.missiles.forEach(elm => elm.draw())
+        this.parachutes.forEach(elm => elm.draw())
     },
 
     clear() {
         this.ctx.clearRect(0, 0, this.width, this.height);
+    },
+
+    generateDrops() {
+        if (this.framesCounter % 90 === 0) {
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, "missile.png"))
+            console.log(this.missiles)
+        }
+        if (this.framesCounter % 500 === 0) {
+            this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, "parachute.png"))
+        }
+    },
+
+    clearDrops() {
+        this.missiles = this.missiles.filter(miss => miss.position.y <= 500)
+        this.parachutes = this.parachutes.filter(para => para.position.y <= 500)
     },
 
     reset() {
