@@ -1,11 +1,11 @@
 class Missile {
-    constructor(ctx, canvasWidth, canvasHeight, imgName) {
+    constructor(ctx, canvasWidth, canvasHeight, speed, points, imgName) {
         this.ctx = ctx
         this.position = {
             x: Math.floor(800 * Math.random()),
             y: 0
         }
-        this.missileSize = {
+        this.size = {
             width: 30,
             height: 60
         }
@@ -16,14 +16,17 @@ class Missile {
 
         this.img = new Image()
         this.img.src = `img/${imgName}`
+
+        this.speed = speed
+        this.points = points
     }
 
     move() {
-        this.position.y += 1
+        this.position.y += this.speed
     }
 
     draw() {
-        this.ctx.drawImage(this.img, this.position.x, this.position.y, this.missileSize.width, this.missileSize.height)
+        this.ctx.drawImage(this.img, this.position.x, this.position.y, this.size.width, this.size.height)
         this.move()
     }
 }

@@ -1,5 +1,5 @@
-class Parachute {
-    constructor(ctx, canvasWidth, canvasHeight, speed, points, imgName) {
+class Boss {
+    constructor(ctx, canvasWidth, canvasHeight, speed, imgName) {
         this.ctx = ctx
         this.position = {
             x: Math.floor(800 * Math.random()),
@@ -17,8 +17,8 @@ class Parachute {
         this.img = new Image()
         this.img.src = `img/${imgName}`
         
+        this.lifesCounter = 30
         this.speed = speed
-        this.points = points
     }
 
     move() {

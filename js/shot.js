@@ -5,7 +5,7 @@ class Shot {
             x: turretPosX + 16,
             y: turretPosY - 40
         }
-        this.shotSize = {
+        this.size = {
             width: turretWidth / 3,
             height: turretHeight /2
         }
@@ -15,7 +15,7 @@ class Shot {
     }
 
     draw() {
-        this.ctx.drawImage(this.img, this.position.x, this.position.y, this.shotSize.width, this.shotSize.height)
+        this.ctx.drawImage(this.img, this.position.x, this.position.y, this.size.width, this.size.height)
         this.move()
     }
 
