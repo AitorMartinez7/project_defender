@@ -82,7 +82,7 @@ const game = {
                 // elm.imgName = "groundExplosion.png"
             }
         })
-        this.missiles = this.missiles.filter(miss => miss.position.y <= 470)
+        this.missiles = this.missiles.filter(miss => miss.position.y < 470)
 
         this.parachutes.forEach(elm => {
             if (elm.position.y === 450) {
