@@ -2,7 +2,7 @@ class Missile {
     constructor(ctx, canvasWidth, canvasHeight, speed, points, imgName) {
         this.ctx = ctx
         this.position = {
-            x: Math.floor(800 * Math.random()),
+            x: Math.floor(860 * Math.random()),
             y: 0
         }
         this.size = {
