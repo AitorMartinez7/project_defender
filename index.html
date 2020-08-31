@@ -9,14 +9,14 @@
 </head>
 
 <body>
-
     <article class="hero">
         <h1>Ironhack Defender</h1>
-        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda eaque vitae alias incidunt. Veritatis odio esse pariatur, assumenda excepturi rerum magnam est sit atque nihil sapiente praesentium similique dolores ullam?</p>
+        <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Assumenda eaque vitae alias incidunt. Veritatis
+            odio esse pariatur, assumenda excepturi rerum magnam est sit atque nihil sapiente praesentium similique
+            dolores ullam?</p>
     </article>
-    <a href='#' class="start">START</a>
+    <a href='#' class="start">start</a>
     <div class="board">
-
         <div class="counters">
             <div class="points-counter">
                 <h5>Puntos:<span class="points">0</span></h5>
@@ -25,9 +25,41 @@
                 <h5>Vidas:<span class="lifes">0</span></h5>
             </div>
         </div>
-
         <canvas id="canvas"></canvas>
-
+    </div>
+    <div class="bad-ending">
+        <h2>Game Over</h2>
+        <article>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima incidunt facilis sequi omnis, ratione, ea
+                vel
+            </p>
+            <div>
+                <div class="points-counter final">
+                    <h5>Puntos:<span class="bad-points">0</span></h5>
+                </div>
+                <div class="lifes-counter final">
+                    <h5>Vidas:<span class="bad-lifes">0</span></h5>
+                </div>
+                <a id="retry"href="/index.html">retry</a>
+            </div>
+        </article>
+    </div>
+    <div class="good-ending">
+        <h2>Congratulations</h2>
+        <article>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima incidunt facilis sequi omnis, ratione, ea
+                vel
+            </p>
+            <div>
+                <div class="points-counter final">
+                    <h5>Puntos:<span class="good-points">0</span></h5>
+                </div>
+                <div class="lifes-counter final">
+                    <h5>Vidas:<span class="good-lifes">0</span></h5>
+                </div>
+                <a id="play" href="/index.html">play again</a>
+            </div>
+        </article>
     </div>
 
     <script src="js/background.js"></script>

@@ -1,6 +1,10 @@
 class Background {
-    constructor(ctx, canvasWidth, canvasHeight, imgName) {
+    constructor(ctx, posX, posY, canvasWidth, canvasHeight, imgName) {
         this.ctx = ctx
+        this.backgroundPos = {
+            x: posX,
+            y: posY
+        }
         this.backgroundSize = {
             width: canvasWidth,
             height: canvasHeight
@@ -10,6 +14,6 @@ class Background {
     }
 
     draw() {
-        this.ctx.drawImage(this.img, 0, 0, this.backgroundSize.width, this.backgroundSize.height)
+        this.ctx.drawImage(this.img, this.backgroundPos.x, this.backgroundPos.y, this.backgroundSize.width, this.backgroundSize.height)
     }
 }

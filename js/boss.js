@@ -1,5 +1,5 @@
 class Boss {
-    constructor(ctx, canvasWidth, canvasHeight, speed, points, damage, imgName) {
+    constructor(ctx, canvasWidth, canvasHeight, speed, points, imgName) {
         this.ctx = ctx
         this.position = {
             x: Math.floor(390 * Math.random()),
@@ -17,10 +17,9 @@ class Boss {
         this.img = new Image()
         this.img.src = `img/${imgName}`
         
-        this.lifesCounter = 30
+        this.lifesCounter = 31
         this.speed = speed
         this.points = points
-        this.damage = damage
     }
 
     move() {

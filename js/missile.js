@@ -1,5 +1,5 @@
 class Missile {
-    constructor(ctx, canvasWidth, canvasHeight, speed, points, imgName) {
+    constructor(ctx, canvasWidth, canvasHeight, speed, points, damage, imgName) {
         this.ctx = ctx
         this.position = {
             x: Math.floor(860 * Math.random()),
@@ -17,6 +17,7 @@ class Missile {
         this.img = new Image()
         this.img.src = `img/${imgName}`
 
+        this.damage = damage
         this.speed = speed
         this.points = points
     }

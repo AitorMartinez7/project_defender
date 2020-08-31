@@ -16,25 +16,31 @@ const game = {
     pointsCounter: 0,
     lifesCounter: 5,
     background: undefined,
+    overlay: undefined,
     canvasSize: {
         w: 900,
-        h: 500,
+        h: 700,
     },
+    intervalID: undefined,
+
     init() {
-        this.canvas = document.querySelector("canvas");
-        this.ctx = canvas.getContext("2d");
+        this.canvas = document.querySelector("canvas")
+        this.ctx = canvas.getContext("2d")
+        this.pointsCounter = 0
+        this.lifesCounter = 5
+        this.turret = undefined
         this.setDimensions();
         this.start();
         this.setEventListeners()
     },
     setDimensions() {
-        this.canvas.setAttribute("width", this.canvasSize.w);
-        this.canvas.setAttribute("height", this.canvasSize.h);
+        this.canvas.setAttribute("width", this.canvasSize.w)
+        this.canvas.setAttribute("height", this.canvasSize.h)
     },
 
     start() {
         this.reset()
-        setInterval(() => {
+        this.intervalID = setInterval(() => {
             if (this.framesCounter > 5000) {
                 this.framesCounter = 0
             } else {
@@ -48,11 +54,13 @@ const game = {
             this.missilesColission()
             this.parachutesColission()
             this.bossColission()
+            this.winOrLoose()
         }, 1000 / this.FPS);
     },
   
     drawAll() {
         this.background.draw()
+        this.overlay.draw()
         this.turret.draw()
         this.missiles.forEach(elm => elm.draw())
         this.parachutes.forEach(elm => elm.draw())
@@ -62,6 +70,11 @@ const game = {
     drawCounters() {
         document.querySelector(".points").innerHTML = this.pointsCounter
         document.querySelector(".lifes").innerHTML = this.lifesCounter
+
+        document.querySelector(".bad-points").innerHTML = this.pointsCounter
+        document.querySelector(".good-points").innerHTML = this.pointsCounter
+        document.querySelector(".bad-lifes").innerHTML = 0
+        document.querySelector(".good-lifes").innerHTML = this.lifesCounter
     },
 
     clear() {
@@ -70,46 +83,52 @@ const game = {
 
     generateDrops() {
         if (this.framesCounter % 180 === 0) {
-            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.5, 10, "missile.png"))
-
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1, 10, 1, "missile.png"))
         }
-        if (this.framesCounter % 500 === 0) {
-            this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, 1, 50, "parachute.png"))
+        if (this.framesCounter % 300 === 0) {
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.7, 20, 2, "shotgun.png"))
         }
         if (this.framesCounter % 1000 === 0) {
-            this.boss.push(new Boss(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.2, 500, this.lifesCounter, "boss.gif"))
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.7, 30, 1, "sniper.png"))
+        }
+        if (this.framesCounter % 500 === 0) {
+            this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.3, 50, "parachute.png"))
+        }
+        if (this.framesCounter % 2000 === 0) {
+            this.boss.push(new Boss(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.3, 500, "boss.gif"))
         }
     },
 
     clearDrops() {
         this.missiles.forEach(elm => {
-            if (elm.position.y >= 470) {
-                this.lifesCounter--
+            if (elm.position.y >= 670) {
+                this.lifesCounter -= elm.damage
                 // elm.imgName = "groundExplosion.png"
             }
         })
-        this.missiles = this.missiles.filter(miss => miss.position.y < 470)
+        this.missiles = this.missiles.filter(miss => miss.position.y < 670)
 
         this.parachutes.forEach(elm => {
-            if (elm.position.y === 450) {
+            if (elm.position.y >= 650) {
                 this.pointsCounter += elm.points
                 
             }
         })
-        this.parachutes = this.parachutes.filter(para => para.position.y <= 450)
+        this.parachutes = this.parachutes.filter(para => para.position.y <= 650)
 
         this.boss.forEach(elm => {
-            if (elm.position.y === 450) {
-                this.lifesCounter -= elm.damage
+            if (elm.position.y >= 550) {
+                this.lifesCounter = 0
 
             }
         })
-        // this.parachutes = this.parachutes.filter(para => para.position.y <= 450)
+        this.boss = this.boss.filter(para => para.position.y < 550)
     },
 
     reset() {
         this.turret = new Turret(this.ctx, this.canvasSize.w / 2 -30, this.canvasSize.h - 110, this.canvasSize.w, this.canvasSize.h, "turret.png")
-        this.background = new Background(this.ctx, this.canvasSize.w, this.canvasSize.h, "gameBackground.jpeg")
+        this.background = new Background(this.ctx, 0, 0, this.canvasSize.w, this.canvasSize.h, "gameBackground.jpeg")
+        this.overlay = new Background(this.ctx, 0, 550, this.canvasSize.w, 150, "cityBackground.png")
     }, 
 
     collision(elm1, elm2) {
@@ -181,4 +200,28 @@ const game = {
             e.keyCode === 32 ? this.turret.shoot() : null
         });
     },
+
+    winOrLoose() {
+        if (this.lifesCounter === 0) {
+            document.querySelector('.board').style.display = 'none'
+            document.querySelector('.bad-ending').style.display = 'block'
+            this.restartGame()
+        }
+        this.boss.forEach(elm => {
+            if (elm.lifesCounter === 1) {
+                document.querySelector('.board').style.display = 'none'
+                document.querySelector('.good-ending').style.display = 'block'
+                this.restartGame()
+
+            } 
+        })
+    },
+
+    restartGame() {
+        clearInterval(this.intervalID)
+        this.missiles = []
+        this.parachutes = []
+        this.boss = []
+        this.turret.shots = []
+    }
 };
