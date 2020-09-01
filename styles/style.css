@@ -98,7 +98,7 @@ a {
   border: 5px solid white;
   border-radius: 10%;
   padding: 3em 0;
-  margin: 0 20em;
+  margin: 0 10%;
   background-image: url('../img/GameOverBackground.png');
   background-size: cover;
   background-color: rgb(15, 15, 15);
@@ -129,10 +129,10 @@ a {
   border: 5px solid white;
   border-radius: 10%;
   padding: 3em 0;
-  margin: 50px 20em;
+  margin: 50px 10%;
   background-image: url('../img/goodBackground.png');
   background-size: cover;
-  display:none
+  display: none
 }
 
 .good-ending h2 {
