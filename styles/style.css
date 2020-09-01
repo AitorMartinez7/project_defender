@@ -23,10 +23,10 @@ body {
 
 .hero p {
   margin: 50px auto;
-  width: 30%;
+  width: 80%;
   text-align: center;
   font-family: "Press Start 2P";
-  color: rgb(194, 219, 51);
+  color: white;
 }
 
 embed {

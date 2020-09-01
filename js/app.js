@@ -13,6 +13,8 @@ const game = {
     boss: [],
     missiles: [],
     parachutes: [],
+    kit: [],
+    explosion: [],
     pointsCounter: 0,
     lifesCounter: 5,
     background: undefined,
@@ -54,6 +56,7 @@ const game = {
             this.missilesColission()
             this.parachutesColission()
             this.bossColission()
+            this.kitCollision()
             this.winOrLoose()
         }, 1000 / this.FPS);
     },
@@ -65,6 +68,8 @@ const game = {
         this.missiles.forEach(elm => elm.draw())
         this.parachutes.forEach(elm => elm.draw())
         this.boss.forEach(elm => elm.draw())
+        this.kit.forEach(elm => elm.draw())
+        this.explosion.forEach(elm => elm.draw(this.framesCounter))
     },
 
     drawCounters() {
@@ -97,24 +102,30 @@ const game = {
         if (this.framesCounter % 2000 === 0) {
             this.boss.push(new Boss(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.3, 500, "boss.gif"))
         }
+        if (this.framesCounter % 800 === 0) {
+            this.kit.push(new Kit(this.ctx, 2, 1, "cacaolat.png"))
+        }
     },
 
     clearDrops() {
         this.missiles.forEach(elm => {
-            if (elm.position.y >= 670) {
+            if (elm.position.y >= 650 && this.lifesCounter === 1) {
+                this.lifesCounter = 0
+                this.explosion.push(new Explosion(this.ctx, elm.position.x, elm.position.y, 'explosionSheet.png'))
+            } else if (elm.position.y >= 650) {
                 this.lifesCounter -= elm.damage
-                // elm.imgName = "groundExplosion.png"
+                this.explosion.push(new Explosion(this.ctx, elm.position.x, elm.position.y, 'explosionSheet.png'))
             }
         })
-        this.missiles = this.missiles.filter(miss => miss.position.y < 670)
+        this.missiles = this.missiles.filter(miss => miss.position.y < 650)
 
         this.parachutes.forEach(elm => {
-            if (elm.position.y >= 650) {
+            if (elm.position.y >= 640) {
                 this.pointsCounter += elm.points
                 
             }
         })
-        this.parachutes = this.parachutes.filter(para => para.position.y <= 650)
+        this.parachutes = this.parachutes.filter(para => para.position.y <= 640)
 
         this.boss.forEach(elm => {
             if (elm.position.y >= 550) {
@@ -123,10 +134,14 @@ const game = {
             }
         })
         this.boss = this.boss.filter(para => para.position.y < 550)
+
+        this.kit = this.kit.filter(para => para.position.y < 695)
+
+        this.clearExplosion()
     },
 
     reset() {
-        this.turret = new Turret(this.ctx, this.canvasSize.w / 2 -30, this.canvasSize.h - 110, this.canvasSize.w, this.canvasSize.h, "turret.png")
+        this.turret = new Turret(this.ctx, this.canvasSize.w / 2 -30, this.canvasSize.h - 100, this.canvasSize.w, this.canvasSize.h, "germantastico2.png")
         this.background = new Background(this.ctx, 0, 0, this.canvasSize.w, this.canvasSize.h, "gameBackground.jpeg")
         this.overlay = new Background(this.ctx, 0, 550, this.canvasSize.w, 150, "cityBackground.png")
     }, 
@@ -140,11 +155,11 @@ const game = {
         }
     },
 
-    missilesColission() { 
+    missilesColission() {
         this.turret.shots.forEach(elm2 => {
             this.missiles.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
-                    // elm1.imgName = "airExplosion.png"
+                    this.explosion.push(new Explosion(this.ctx, elm1.position.x, elm1.position.y, 'explosionSheet.png'))
                     const elm1Index = this.missiles.indexOf(elm1)
                     this.missiles.splice(elm1Index, 1)
                     const elm2Index = this.turret.shots.indexOf(elm2)
@@ -188,6 +203,29 @@ const game = {
                     }
                 }
             })
+        })
+    },
+
+    kitCollision() {
+        this.turret.shots.forEach(elm2 => {
+            this.kit.forEach(elm1 => {
+                if (this.collision(elm1, elm2) === true) {
+                    const elm2Index = this.turret.shots.indexOf(elm2)
+                    this.turret.shots.splice(elm2Index, 1)
+                    const elm1Index = this.kit.indexOf(elm1)
+                    this.kit.splice(elm1Index, 1)
+                    this.lifesCounter += 1
+                }
+            })
+        })
+    },
+
+    clearExplosion() {
+        this.explosion.forEach(elm => {
+            if (elm.img.framesIndex === 15) {
+                const elementIndex = this.explosion.indexOf(elm)
+                this.explosion.splice(elementIndex, 1)
+            }
         })
     },
 

@@ -6,7 +6,7 @@ class Turret {
             y: posY
         }
         this.turretSize = {
-            width: 50,
+            width: 70,
             height: 100
         }
         this.canvasSize = {
@@ -44,7 +44,7 @@ class Turret {
     }
 
     shoot() {
-        this.shots.push(new Shot(this.ctx, this.turretPos.x, this.turretPos.y, this.turretSize.width, this.turretSize.height, this.canvasSize.height, "turretShot.png"))
+        this.shots.push(new Shot(this.ctx, this.turretPos.x, this.turretPos.y, this.canvasSize.height, "consoleShot.png"))
     }
 
     clearShots() {
