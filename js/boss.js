@@ -17,7 +17,7 @@ class Boss {
         this.img = new Image()
         this.img.src = `img/${imgName}`
         
-        this.lifesCounter = 31
+        this.lifesCounter = 30
         this.speed = speed
         this.points = points
     }

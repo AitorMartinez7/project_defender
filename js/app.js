@@ -196,9 +196,7 @@ const game = {
                     const elm2Index = this.turret.shots.indexOf(elm2)
                     this.turret.shots.splice(elm2Index, 1)
                     elm1.lifesCounter -= 1
-                    if (elm1.lifesCounter === 0) {
-                        const elm1Index = this.boss.indexOf(elm1)
-                        this.boss.splice(elm1Index, 1)
+                    if (elm1.lifesCounter === 1) {
                         this.pointsCounter += elm1.points
                     }
                 }
@@ -246,7 +244,7 @@ const game = {
             this.restartGame()
         }
         this.boss.forEach(elm => {
-            if (elm.lifesCounter === 1) {
+            if (elm.lifesCounter === 0) {
                 document.querySelector('.board').style.display = 'none'
                 document.querySelector('.good-ending').style.display = 'block'
                 this.restartGame()
