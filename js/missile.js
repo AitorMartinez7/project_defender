@@ -16,6 +16,8 @@ class Missile {
 
         this.img = new Image()
         this.img.src = `img/${imgName}`
+        this.img.frames = 4
+        this.img.framesIndex = 0
 
         this.damage = damage
         this.speed = speed
@@ -26,8 +28,27 @@ class Missile {
         this.position.y += this.speed
     }
 
-    draw() {
-        this.ctx.drawImage(this.img, this.position.x, this.position.y, this.size.width, this.size.height)
+    animate(framesCounter) {
+        if (framesCounter % 5 == 0) {
+            this.img.framesIndex++;
+        }
+        if (this.img.framesIndex > this.img.frames - 1) {
+            this.img.framesIndex = 0;
+        }
+    }
+
+    draw(framesCounter) {
+        this.ctx.drawImage(
+            this.img,
+            this.img.framesIndex * Math.floor(this.img.width / this.img.frames),
+            0,
+            Math.floor(this.img.width / this.img.frames),
+            this.img.height,
+            this.position.x,
+            this.position.y,
+            this.size.width,
+            this.size.height)
+        this.animate(framesCounter)
         this.move()
     }
 }

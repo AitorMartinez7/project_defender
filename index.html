@@ -29,12 +29,13 @@
             </div>
         </div>
         <canvas id="canvas"></canvas>
+        <audio class='shoot'></audio>
     </div>
 
     <div class="bad-ending">
         <h2>Game Over</h2>
         <article>
-            <p>Tras una cruenta batalla Germantástico, líder de la resistencia del testing, cayó antes los impulsivos y descontrolados
+            <p>Tras una cruenta batalla Germantástico, líder de la resistencia del testing, cayó ante los impulsivos y descontrolados
             ataques de CodeGunner. Las gentes de la zona serán reeducadas para olvidar el testeo y nadie podrá volver a trabajar sin
             dolores de cabeza... Code City ha caído.
             </p>
@@ -53,9 +54,7 @@
     <div class="good-ending">
         <h2>Congratulations</h2>
         <article>
-            <p>Gracias, Germantástico, es a ti a quien le debemos el nuevo amanecer que veremos mañana y su código ordenado. Code City
-            vive un día más para salvar al resto del mundo de los pistoleros del código.
-            </p>
+            <p>- Las pistolas no funcionan con JavaScript, merluzo!<br>Aquellas fueron las últimas palabras que CodeGunner escuchó antes de desvanecerse entre las sombras de mala praxis de las que procedía. Gracias por salvarnos, Germantástico, Code City verá un nuevo dia.</p>
             <div>
                 <div class="points-counter final">
                     <h5>Puntos:<span class="good-points">0</span></h5>
@@ -68,6 +67,7 @@
         </article>
     </div>
 
+    <script src="js/audio.js"></script>
     <script src="js/background.js"></script>
     <script src="js/explosion.js"></script>
     <script src="js/boss.js"></script>

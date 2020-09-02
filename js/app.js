@@ -15,8 +15,16 @@ const game = {
     parachutes: [],
     kit: [],
     explosion: [],
+    audio: {
+        shoot: new Audio('./bso/NFF-toy-gun.wav'),
+        explosion: new Audio('./bso/NFF-extinguisher.wav'),
+        parachutesImpact: new Audio('./bso/NFF-kid-attack.wav'),
+        parachutesGain: new Audio('./bso/NFF-iron-tickle.wav'),
+        kit:new Audio('./bso/NFF-good-tip-low.wav')
+    },
     pointsCounter: 0,
     lifesCounter: 5,
+    cityCounter: 0,
     background: undefined,
     overlay: undefined,
     canvasSize: {
@@ -56,6 +64,7 @@ const game = {
             this.missilesColission()
             this.parachutesColission()
             this.bossColission()
+            this.destroyCity()
             this.kitCollision()
             this.winOrLoose()
         }, 1000 / this.FPS);
@@ -65,11 +74,21 @@ const game = {
         this.background.draw()
         this.overlay.draw()
         this.turret.draw()
-        this.missiles.forEach(elm => elm.draw())
+        this.missiles.forEach(elm => elm.draw(this.framesCounter))
         this.parachutes.forEach(elm => elm.draw())
         this.boss.forEach(elm => elm.draw())
         this.kit.forEach(elm => elm.draw())
         this.explosion.forEach(elm => elm.draw(this.framesCounter))
+    },
+
+    destroyCity() {
+        if (this.cityCounter === 1) {
+            this.overlay.img.src = "../img/cityBackground2.png"
+        } else if (this.cityCounter === 2) {
+            this.overlay.img.src = "../img/cityBackground3.png"
+        } else if (this.cityCounter >= 3) {
+            this.overlay.img.src = "../img/cityBackground4.png"
+        }
     },
 
     drawCounters() {
@@ -88,13 +107,13 @@ const game = {
 
     generateDrops() {
         if (this.framesCounter % 180 === 0) {
-            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1, 10, 1, "missile.png"))
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1, 10, 1, "missilesAnimation.png"))
         }
         if (this.framesCounter % 300 === 0) {
-            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.7, 20, 2, "shotgun.png"))
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.7, 20, 2, "shotgunAnimation.png"))
         }
         if (this.framesCounter % 1000 === 0) {
-            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.7, 30, 1, "sniper.png"))
+            this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.7, 30, 1, "sniperAnimation.png"))
         }
         if (this.framesCounter % 500 === 0) {
             this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.3, 50, "parachute.png"))
@@ -111,9 +130,13 @@ const game = {
         this.missiles.forEach(elm => {
             if (elm.position.y >= 650 && this.lifesCounter === 1) {
                 this.lifesCounter = 0
+                this.cityCounter += 1
+                this.audio.explosion.play()
                 this.explosion.push(new Explosion(this.ctx, elm.position.x, elm.position.y, 'explosionSheet.png'))
             } else if (elm.position.y >= 650) {
                 this.lifesCounter -= elm.damage
+                this.cityCounter += 1
+                this.audio.explosion.play()
                 this.explosion.push(new Explosion(this.ctx, elm.position.x, elm.position.y, 'explosionSheet.png'))
             }
         })
@@ -121,6 +144,7 @@ const game = {
 
         this.parachutes.forEach(elm => {
             if (elm.position.y >= 640) {
+                this.audio.parachutesGain.play()
                 this.pointsCounter += elm.points
                 
             }
@@ -159,6 +183,7 @@ const game = {
         this.turret.shots.forEach(elm2 => {
             this.missiles.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
+                    this.audio.explosion.play()
                     this.explosion.push(new Explosion(this.ctx, elm1.position.x, elm1.position.y, 'explosionSheet.png'))
                     const elm1Index = this.missiles.indexOf(elm1)
                     this.missiles.splice(elm1Index, 1)
@@ -174,6 +199,7 @@ const game = {
         this.turret.shots.forEach(elm2 => {
             this.parachutes.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
+                    this.audio.parachutesImpact.play()
                     const elm1Index = this.parachutes.indexOf(elm1)
                     this.parachutes.splice(elm1Index, 1)
                     const elm2Index = this.turret.shots.indexOf(elm2)
@@ -193,6 +219,7 @@ const game = {
         this.turret.shots.forEach(elm2 => {
             this.boss.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
+                    this.cityCounter = 3
                     const elm2Index = this.turret.shots.indexOf(elm2)
                     this.turret.shots.splice(elm2Index, 1)
                     elm1.lifesCounter -= 1
@@ -208,6 +235,7 @@ const game = {
         this.turret.shots.forEach(elm2 => {
             this.kit.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
+                    this.audio.kit.play()
                     const elm2Index = this.turret.shots.indexOf(elm2)
                     this.turret.shots.splice(elm2Index, 1)
                     const elm1Index = this.kit.indexOf(elm1)
@@ -234,6 +262,7 @@ const game = {
         }
         document.addEventListener("keyup", e => {
             e.keyCode === 32 ? this.turret.shoot() : null
+            e.keyCode === 32 ? this.audio.shoot.play() : null
         });
     },
 
@@ -241,12 +270,16 @@ const game = {
         if (this.lifesCounter === 0) {
             document.querySelector('.board').style.display = 'none'
             document.querySelector('.bad-ending').style.display = 'block'
+            const audio = document.querySelector('audio')
+            document.querySelector('.hero').removeChild(audio)
             this.restartGame()
         }
         this.boss.forEach(elm => {
             if (elm.lifesCounter === 0) {
                 document.querySelector('.board').style.display = 'none'
                 document.querySelector('.good-ending').style.display = 'block'
+                const audio = document.querySelector('audio')
+                document.querySelector('.hero').removeChild(audio)
                 this.restartGame()
 
             } 
