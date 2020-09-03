@@ -6,8 +6,8 @@ class Shot {
             y: turretPosY - 40
         }
         this.size = {
-            width: 40,
-            height: 100
+            width: 20,
+            height: 60
         }
         this.maxRange = CanvasHeight
         this.img = new Image()

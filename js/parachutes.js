@@ -6,8 +6,8 @@ class Parachute {
             y: 0
         }
         this.size = {
-            width: 30,
-            height: 60
+            width: 60,
+            height: 75
         }
         this.canvasSize = {
             width: canvasWidth,

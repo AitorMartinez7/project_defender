@@ -14,13 +14,16 @@ const game = {
     missiles: [],
     parachutes: [],
     kit: [],
+    bonusTarget: [],
     explosion: [],
+    kitExplosion: [],
     audio: {
         shoot: new Audio('./bso/NFF-toy-gun.wav'),
-        explosion: new Audio('./bso/NFF-extinguisher.wav'),
+        explosion: new Audio('./bso/NFF-shut-down.wav'),
         parachutesImpact: new Audio('./bso/NFF-kid-attack.wav'),
         parachutesGain: new Audio('./bso/NFF-iron-tickle.wav'),
-        kit:new Audio('./bso/NFF-good-tip-low.wav')
+        kit: new Audio('./bso/NFF-good-tip-low.wav'),
+        bonusTarget: new Audio('./bso/NFF-alien-react.wav'),
     },
     pointsCounter: 0,
     lifesCounter: 5,
@@ -66,6 +69,7 @@ const game = {
             this.bossColission()
             this.destroyCity()
             this.kitCollision()
+            this.bonusTargetColission()
             this.winOrLoose()
         }, 1000 / this.FPS);
     },
@@ -73,12 +77,14 @@ const game = {
     drawAll() {
         this.background.draw()
         this.overlay.draw()
-        this.turret.draw()
+        this.turret.draw(this.framesCounter)
         this.missiles.forEach(elm => elm.draw(this.framesCounter))
         this.parachutes.forEach(elm => elm.draw())
         this.boss.forEach(elm => elm.draw())
         this.kit.forEach(elm => elm.draw())
+        this.bonusTarget.forEach(elm => elm.draw())
         this.explosion.forEach(elm => elm.draw(this.framesCounter))
+        this.kitExplosion.forEach(elm => elm.draw(this.framesCounter))
     },
 
     destroyCity() {
@@ -129,13 +135,16 @@ const game = {
             this.missiles.push(new Missile(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.7, 30, 1, "sniperAnimation.png"))
         }
         if (this.framesCounter % 500 === 0) {
-            this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.3, 50, "parachute.png"))
+            this.parachutes.push(new Parachute(this.ctx, this.canvasSize.w, this.canvasSize.h, 1.3, 50, "hostage.png"))
         }
-        if (this.framesCounter % 2000 === 0) {
+        if (this.framesCounter % 3000 === 0) {
             this.boss.push(new Boss(this.ctx, this.canvasSize.w, this.canvasSize.h, 0.3, 500, "boss.gif"))
         }
         if (this.framesCounter % 800 === 0) {
-            this.kit.push(new Kit(this.ctx, 2, 1, "cacaolat.png"))
+            this.kit.push(new Kit(this.ctx, 2, 1, "syringe.gif"))
+        }
+        if (this.framesCounter % 1400 === 0) {
+            this.bonusTarget.push(new BonusTarget(this.ctx, 1.5, 350, "bonus.png"))
         }
     },
 
@@ -174,6 +183,8 @@ const game = {
         this.boss = this.boss.filter(para => para.position.y < 550)
 
         this.kit = this.kit.filter(para => para.position.y < 695)
+
+        this.bonusTarget = this.bonusTarget.filter(para => para.position.x < 900)
 
         this.clearExplosion()
     },
@@ -258,11 +269,31 @@ const game = {
             this.kit.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
                     this.audio.kit.play()
+                    this.kitExplosion.push(new KitExplosion(this.ctx, elm1.position.x, elm1.position.y, 'healingSheet.png'))
                     const elm2Index = this.turret.shots.indexOf(elm2)
                     this.turret.shots.splice(elm2Index, 1)
                     const elm1Index = this.kit.indexOf(elm1)
                     this.kit.splice(elm1Index, 1)
                     this.lifesCounter += 1
+                }
+            })
+        })
+    },
+
+    bonusTargetColission() {
+        this.turret.shots.forEach(elm2 => {
+            this.bonusTarget.forEach(elm1 => {
+                if (this.collision(elm1, elm2) === true) {
+                    const elm2Index = this.turret.shots.indexOf(elm2)
+                    this.turret.shots.splice(elm2Index, 1)
+                    elm1.lifesCounter -= 1
+                    if (elm1.lifesCounter === 0) {
+                        this.explosion.push(new Explosion(this.ctx, elm1.position.x, elm1.position.y, 'explosionSheet.png'))
+                        this.audio.bonusTarget.play()
+                        this.pointsCounter += elm1.points
+                        const elm1Index = this.bonusTarget.indexOf(elm1)
+                        this.bonusTarget.splice(elm1Index, 1)
+                    }
                 }
             })
         })
@@ -275,18 +306,40 @@ const game = {
                 this.explosion.splice(elementIndex, 1)
             }
         })
+        this.kitExplosion.forEach(elm => {
+            if (elm.img.framesIndex === 24) {
+                const elementIndex = this.kitExplosion.indexOf(elm)
+                this.kitExplosion.splice(elementIndex, 1)
+            }
+        })
     },
 
-    setEventListeners() {
-        document.onkeydown = e => {
-            e.keyCode === 37 ? this.turret.move('left') : null
-            e.keyCode === 39 ? this.turret.move('right') : null
-        }
-        document.addEventListener("keyup", e => {
-            e.keyCode === 32 ? this.turret.shoot() : null
-            e.keyCode === 32 ? this.audio.shoot.play() : null
-        });
-    },
+     setEventListeners() {
+         document.onkeydown = e => {
+             if (e.keyCode === 37) {
+                 this.turret.move('left')
+                 this.turret.img.src = 'img/player_left.png';
+                 this.turret.img.frames = 4;
+             }
+             if (e.keyCode === 39) {
+                 this.turret.move('right')
+                 this.turret.img.src = 'img/player_right.png';
+                 this.turret.img.frames = 4;
+             }
+         }
+         document.addEventListener("keyup", e => {
+             e.keyCode === 32 ? this.turret.shoot() : null
+             e.keyCode === 32 ? this.audio.shoot.play() : null
+             if (e.keyCode === 37) {
+                 this.turret.img.src = 'img/player_shot.png';
+                 this.turret.img.frames = 2;
+             }
+             if (e.keyCode === 39) {
+                 this.turret.img.src = 'img/player_shot.png';
+                 this.turret.img.frames = 2;
+             }
+         });
+     },
 
     winOrLoose() {
         if (this.lifesCounter === 0) {
