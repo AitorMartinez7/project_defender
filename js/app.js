@@ -91,6 +91,19 @@ const game = {
         }
     },
 
+    isDestroyed() {
+        if (this.cityCounter === 0) {
+            this.pointsCounter += 600
+        } else if (this.cityCounter === 1) {
+            this.pointsCounter += 400
+        } else if (this.cityCounter === 2) {
+            this.pointsCounter += 200
+        } else if (this.cityCounter >= 3) {
+            this.pointsCounter -= 400
+        }
+
+    },
+
     drawCounters() {
         document.querySelector(".points").innerHTML = this.pointsCounter
         document.querySelector(".lifes").innerHTML = this.lifesCounter
@@ -154,6 +167,7 @@ const game = {
         this.boss.forEach(elm => {
             if (elm.position.y >= 550) {
                 this.lifesCounter = 0
+                this.cityCounter = 3
 
             }
         })
@@ -219,12 +233,20 @@ const game = {
         this.turret.shots.forEach(elm2 => {
             this.boss.forEach(elm1 => {
                 if (this.collision(elm1, elm2) === true) {
-                    this.cityCounter = 3
                     const elm2Index = this.turret.shots.indexOf(elm2)
                     this.turret.shots.splice(elm2Index, 1)
                     elm1.lifesCounter -= 1
                     if (elm1.lifesCounter === 1) {
                         this.pointsCounter += elm1.points
+                        if (this.cityCounter === 0) {
+                            this.pointsCounter += 600
+                        } else if (this.cityCounter === 1) {
+                            this.pointsCounter += 400
+                        } else if (this.cityCounter === 2) {
+                            this.pointsCounter += 200
+                        } else if (this.cityCounter >= 3) {
+                            this.pointsCounter -= 400
+                        }
                     }
                 }
             })
@@ -270,16 +292,32 @@ const game = {
         if (this.lifesCounter === 0) {
             document.querySelector('.board').style.display = 'none'
             document.querySelector('.bad-ending').style.display = 'block'
+
             const audio = document.querySelector('audio')
             document.querySelector('.hero').removeChild(audio)
+            
+            const winTheme = document.createElement('audio')
+            winTheme.setAttribute("src", "bso/loseTheme.mp3")
+            winTheme.setAttribute("loop", true)
+            winTheme.setAttribute("autoplay", true)
+            document.querySelector('.hero').appendChild(winTheme)
+
             this.restartGame()
         }
         this.boss.forEach(elm => {
             if (elm.lifesCounter === 0) {
                 document.querySelector('.board').style.display = 'none'
                 document.querySelector('.good-ending').style.display = 'block'
+
                 const audio = document.querySelector('audio')
                 document.querySelector('.hero').removeChild(audio)
+
+                const loseTheme = document.createElement('audio')
+                loseTheme.setAttribute("src", "bso/winTheme.mp3")
+                loseTheme.setAttribute("loop", true)
+                loseTheme.setAttribute("autoplay", true)
+                document.querySelector('.hero').appendChild(loseTheme)
+
                 this.restartGame()
 
             } 

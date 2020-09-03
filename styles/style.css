@@ -129,6 +129,10 @@ a {
   justify-content: space-evenly;
 }
 
+/* .lose-theme {
+  display: none;
+} */
+
 .good-ending {
   border: 5px solid white;
   border-radius: 10%;
@@ -158,6 +162,10 @@ a {
   display: flex;
   justify-content: space-evenly;
 }
+
+/* .win-theme {
+  display: none;
+} */
 
 .points-counter.final {
   background-color: black;
