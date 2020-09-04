@@ -1,7 +1,7 @@
 const game = {
     name: "Ironhack Defender",
     description: "Defense videogame",
-    version: "0.2",
+    version: "1.0",
     authors: "Aitor Martinez & Oliver Blanco",
     license: undefined,
     canvas: undefined,
@@ -359,6 +359,8 @@ const game = {
         }
         this.boss.forEach(elm => {
             if (elm.lifesCounter === 0) {
+                this.isDestroyed()
+
                 document.querySelector('.board').style.display = 'none'
                 document.querySelector('.good-ending').style.display = 'block'
 
