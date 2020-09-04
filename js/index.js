@@ -4,6 +4,7 @@ window.onload = () => {
 const startGame = () => {
     document.querySelector('.start').style.display = 'none'
     document.querySelector('.hero').style.display = 'none'
+    document.querySelector('.instructions').style.display = 'none'
     document.querySelector('.board').style.display = 'flex'
     document.querySelector('.counters').style.display = 'block'
     document.querySelector('canvas').style.display = 'block'
